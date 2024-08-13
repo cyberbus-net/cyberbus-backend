@@ -1,2 +1,0 @@
-DROP SCHEMA utils CASCADE;
-
