@@ -1,0 +1,3 @@
+[submodule "crates/utils/translations"]
+	path = crates/utils/translations
+	url = git@github.com:cyberbus-net/cyberbus-translations.git
