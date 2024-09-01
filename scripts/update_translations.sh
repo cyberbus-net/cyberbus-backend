@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-pushd ../../lemmy-translations
+pushd ../../cyberbus-translations
 git fetch weblate
 git merge weblate/main
 git push
