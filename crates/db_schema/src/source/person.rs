@@ -4,6 +4,7 @@ use crate::{
   newtypes::{DbUrl, InstanceId, PersonId},
   sensitive::SensitiveString,
   source::placeholder_apub_url,
+  jsonbs::{PersonConfig},
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -57,6 +58,9 @@ pub struct Person {
   /// When their ban, if it exists, expires, if at all.
   pub ban_expires: Option<DateTime<Utc>>,
   pub instance_id: InstanceId,
+
+  /// Configuration settings.
+  pub config: Option<PersonConfig>,
 }
 
 #[derive(Clone, derive_new::new)]

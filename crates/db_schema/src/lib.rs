@@ -17,6 +17,9 @@ extern crate diesel_derive_enum;
 extern crate diesel_migrations;
 
 #[cfg(feature = "full")]
+extern crate diesel_as_jsonb;
+
+#[cfg(feature = "full")]
 #[macro_use]
 extern crate async_trait;
 
@@ -24,6 +27,7 @@ pub mod aggregates;
 #[cfg(feature = "full")]
 pub mod impls;
 pub mod newtypes;
+pub mod jsonbs;
 pub mod sensitive;
 #[cfg(feature = "full")]
 #[rustfmt::skip]

@@ -23,6 +23,7 @@ full = [
   "diesel-derive-newtype",
   "diesel-derive-enum",
   "diesel_migrations",
+  "diesel_as_jsonb",
   "bcrypt",
   "lemmy_utils",
   "activitypub_federation",
@@ -58,6 +59,7 @@ diesel = { workspace = true, features = [
 diesel-derive-newtype = { workspace = true, optional = true }
 diesel-derive-enum = { workspace = true, optional = true }
 diesel_migrations = { workspace = true, optional = true }
+diesel_as_jsonb = { workspace = true, optional = true }
 diesel-async = { workspace = true, features = [
   "postgres",
   "deadpool",

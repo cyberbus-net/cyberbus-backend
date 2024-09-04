@@ -106,6 +106,7 @@ activitypub_federation = { version = "0.5.8", default-features = false, features
 diesel = "2.1.6"
 diesel_migrations = "2.1.0"
 diesel-async = "0.4.1"
+diesel_as_jsonb = "1.0.1"
 serde = { version = "1.0.204", features = ["derive"] }
 serde_with = "3.9.0"
 actix-web = { version = "4.8.0", default-features = false, features = [
@@ -211,6 +212,7 @@ prometheus = { version = "0.13.4", features = ["process"] }
 serial_test = { workspace = true }
 clap = { workspace = true }
 actix-web-prom = "0.8.0"
+diesel_as_jsonb= { workspace = true }
 
 [dev-dependencies]
 pretty_assertions = { workspace = true }
