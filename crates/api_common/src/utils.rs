@@ -59,6 +59,9 @@ use std::{collections::HashSet, sync::LazyLock};
 use tracing::warn;
 use url::{ParseError, Url};
 use urlencoding::encode;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+
 
 pub static AUTH_COOKIE_NAME: &str = "jwt";
 
@@ -414,6 +417,53 @@ pub fn honeypot_check(honeypot: &Option<String>) -> LemmyResult<()> {
   } else {
     Ok(())
   }
+}
+
+#[derive(Debug, Serialize)]
+struct InviteRequest {
+  invite_code: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct InviteResponse {
+  validated: bool,
+  assigned_trophy: Option<Vec<String>>,
+}
+
+
+// check invite code is avaliable
+pub async fn invite_code_check(invite_code: &str) -> LemmyResult<Option<Vec<String>>> {
+    // Create an HTTP client
+    let client = Client::new();
+
+    // Define the URL of the HTTP service
+    let url = "http://127.0.0.1:8081/validate-invite-code";
+
+    // Create the request body
+    let request_body = InviteRequest {
+      invite_code: invite_code.to_string(),
+    };
+
+    // Send a POST request
+    let response = client
+      .post(url)
+      .json(&request_body)
+      .header("Authorization", "Bearer valid_token_here") // Adjust token as needed
+      .send()
+      .await?;
+
+    // Check if the response status is OK
+    if response.status().is_success() {
+      // Deserialize the response body
+      let response_body: InviteResponse = response.json().await?;
+      if !response_body.validated{
+        Err(LemmyErrorType::InvaliedInviteCode)?
+      }
+      Ok(response_body.assigned_trophy)
+    } else {
+      // Handle error response
+      Err(LemmyErrorType::RequestCloudControlAPIFailed.into())
+    }
 }
 
 pub async fn send_email_to_user(

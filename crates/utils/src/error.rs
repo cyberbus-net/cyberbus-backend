@@ -181,6 +181,8 @@ pub enum LemmyErrorType {
   Unknown(String),
   CantDeleteSite,
   UrlLengthOverflow,
+  InvaliedInviteCode,
+  RequestCloudControlAPIFailed,
 }
 
 cfg_if! {
