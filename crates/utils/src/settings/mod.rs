@@ -7,7 +7,7 @@ use urlencoding::encode;
 
 pub mod structs;
 
-use structs::{DatabaseConnection, PictrsConfig, PictrsImageMode, Settings};
+use structs::{DatabaseConnection, PictrsConfig, CloudControlAPIConfig, PictrsImageMode, Settings};
 
 static DEFAULT_CONFIG_FILE: &str = "config/config.hjson";
 
@@ -113,7 +113,15 @@ impl Settings {
       .clone()
       .ok_or_else(|| anyhow!("images_disabled").into())
   }
+
+  pub fn cloud_control_api_config(&self) -> LemmyResult<CloudControlAPIConfig> {
+    self
+      .cloud_control_api
+      .clone()
+      .ok_or_else(|| anyhow!("cloud_control_api_disabled").into())
+  }
 }
+
 
 impl PictrsConfig {
   pub fn image_mode(&self) -> PictrsImageMode {

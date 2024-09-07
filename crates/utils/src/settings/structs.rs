@@ -16,6 +16,9 @@ pub struct Settings {
   /// Pictrs image server configuration.
   #[default(Some(Default::default()))]
   pub(crate) pictrs: Option<PictrsConfig>,
+  /// cloud_control_api server configuration.
+  #[default(Some(Default::default()))]
+  pub(crate) cloud_control_api: Option<CloudControlAPIConfig>,
   /// Email sending configuration. All options except login/password are mandatory
   #[default(None)]
   #[doku(example = "Some(Default::default())")]
@@ -90,6 +93,23 @@ pub struct PictrsConfig {
   /// Timeout for uploading images to pictrs (in seconds)
   #[default(30)]
   pub upload_timeout: u64,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, SmartDefault, Document)]
+#[serde(default, deny_unknown_fields)]
+pub struct CloudControlAPIConfig {
+  /// Address where cloud_control_api is available (for cloud data control & dispatch)
+  #[default(Url::parse("http://localhost:8081").expect("parse cloud-_control_api url"))]
+  #[doku(example = "http://localhost:8081")]
+  pub url: Url,
+
+  /// Set a API authorization Bearer key.
+  #[default(None)]
+  pub api_key: Option<String>,
+
+  /// Timeout for API calling (in seconds)
+  #[default(5)]
+  pub api_timeout: u64,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, SmartDefault, Document, PartialEq)]
