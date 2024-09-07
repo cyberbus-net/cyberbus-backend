@@ -51,6 +51,8 @@ pub struct Register {
   pub honeypot: Option<String>,
   /// An answer is mandatory if require application is enabled on the server
   pub answer: Option<String>,
+  /// An invite code is registration restriction for alpha & beta test. 
+  pub invite_code: Option<String>,
 }
 
 #[skip_serializing_none]

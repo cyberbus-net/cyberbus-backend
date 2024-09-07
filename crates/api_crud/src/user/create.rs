@@ -13,6 +13,7 @@ use lemmy_api_common::{
     password_length_check,
     send_new_applicant_email_to_admins,
     send_verification_email,
+    invite_code_check,
     EndpointType,
   },
 };
@@ -58,6 +59,18 @@ pub async fn register(
 
   password_length_check(&data.password)?;
   honeypot_check(&data.honeypot)?;
+
+  // check if user input invide code
+  match &data.invite_code {
+    Some(invite_code) => {
+      invite_code_check(invite_code).await?;
+    },
+    None => {
+      // @NOTE: remove this for open beta test
+      Err(LemmyErrorType::InviteCodeRequired)?
+    }
+  }
+
 
   if local_site.require_email_verification && data.email.is_none() {
     Err(LemmyErrorType::EmailRequired)?

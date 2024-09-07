@@ -183,6 +183,7 @@ pub enum LemmyErrorType {
   UrlLengthOverflow,
   InvaliedInviteCode,
   RequestCloudControlAPIFailed,
+  InviteCodeRequired,
 }
 
 cfg_if! {
