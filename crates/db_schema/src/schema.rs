@@ -373,6 +373,7 @@ diesel::table! {
         enable_nsfw -> Bool,
         community_creation_admin_only -> Bool,
         require_email_verification -> Bool,
+        require_invite_code -> Bool,
         application_question -> Nullable<Text>,
         private_instance -> Bool,
         default_theme -> Text,

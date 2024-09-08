@@ -106,6 +106,7 @@ pub async fn update_site(
     enable_nsfw: data.enable_nsfw,
     community_creation_admin_only: data.community_creation_admin_only,
     require_email_verification: data.require_email_verification,
+    require_invite_code: data.require_invite_code,
     application_question: diesel_string_update(data.application_question.as_deref()),
     private_instance: data.private_instance,
     default_theme: data.default_theme.clone(),

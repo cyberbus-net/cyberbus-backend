@@ -169,6 +169,7 @@ pub struct CreateSite {
   pub enable_nsfw: Option<bool>,
   pub community_creation_admin_only: Option<bool>,
   pub require_email_verification: Option<bool>,
+  pub require_invite_code: Option<bool>,
   pub application_question: Option<String>,
   pub private_instance: Option<bool>,
   pub default_theme: Option<String>,
@@ -226,6 +227,8 @@ pub struct EditSite {
   pub community_creation_admin_only: Option<bool>,
   /// Whether to require email verification.
   pub require_email_verification: Option<bool>,
+  /// Whether to require invite code.
+  pub require_invite_code: Option<bool>,
   /// Your application question form. This is in markdown, and can be many questions.
   pub application_question: Option<String>,
   /// Whether your instance is public, or private.

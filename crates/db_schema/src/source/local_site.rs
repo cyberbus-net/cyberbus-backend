@@ -35,6 +35,8 @@ pub struct LocalSite {
   pub community_creation_admin_only: bool,
   /// Whether emails are required.
   pub require_email_verification: bool,
+  /// Whether invite code are required.
+  pub require_invite_code: bool,
   /// An optional registration application questionnaire in markdown.
   pub application_question: Option<String>,
   /// Whether the instance is private or public.
@@ -84,6 +86,7 @@ pub struct LocalSiteInsertForm {
   pub enable_nsfw: Option<bool>,
   pub community_creation_admin_only: Option<bool>,
   pub require_email_verification: Option<bool>,
+  pub require_invite_code: Option<bool>,
   pub application_question: Option<String>,
   pub private_instance: Option<bool>,
   pub default_theme: Option<String>,
@@ -112,6 +115,7 @@ pub struct LocalSiteUpdateForm {
   pub enable_nsfw: Option<bool>,
   pub community_creation_admin_only: Option<bool>,
   pub require_email_verification: Option<bool>,
+  pub require_invite_code: Option<bool>,
   pub application_question: Option<Option<String>>,
   pub private_instance: Option<bool>,
   pub default_theme: Option<String>,
