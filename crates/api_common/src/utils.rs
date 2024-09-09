@@ -8,6 +8,7 @@ use crate::{
   site::{FederatedInstances, InstanceWithFederationState},
 };
 use chrono::{DateTime, Days, Local, TimeZone, Utc};
+use anyhow::{anyhow};
 use enum_map::{enum_map, EnumMap};
 use lemmy_db_schema::{
   aggregates::structs::{PersonPostAggregates, PersonPostAggregatesForm},
@@ -425,14 +426,24 @@ struct InviteRequest {
 }
 
 #[derive(Debug, Deserialize)]
-struct InviteResponse {
+pub struct InviteResponse {
   validated: bool,
   assigned_trophy: Option<Vec<String>>,
 }
 
 
+impl InviteResponse {
+  pub fn get_assigned_trophy(&self) -> LemmyResult<Vec<String>> {
+    match &self.assigned_trophy {
+      Some(trophies) => Ok(trophies.clone()),
+      None => Err(anyhow!("No assigned trophies found").into()),
+    }
+  }
+}
+
+
 // check invite code is avaliable
-pub async fn invite_code_check(invite_code: &str, settings: &Settings) -> LemmyResult<Option<Vec<String>>> {
+pub async fn invite_code_check(invite_code: &str, settings: &Settings) -> LemmyResult<InviteResponse> {
     // Create an HTTP client
     let client = Client::new();
     let cloud_control_api_config = settings.cloud_control_api_config().unwrap();
@@ -461,7 +472,7 @@ pub async fn invite_code_check(invite_code: &str, settings: &Settings) -> LemmyR
       if !response_body.validated{
         Err(LemmyErrorType::InvaliedInviteCode)?
       }
-      Ok(response_body.assigned_trophy)
+      Ok(response_body)
     } else {
       // Handle error response
       Err(LemmyErrorType::RequestCloudControlAPIFailed.into())

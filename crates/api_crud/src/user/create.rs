@@ -63,7 +63,12 @@ pub async fn register(
   // check if user input invide code
   match &data.invite_code {
     Some(invite_code) => {
-      invite_code_check(invite_code, context.settings()).await?;
+      let invite_code_check_response = invite_code_check(invite_code, context.settings()).await?;
+      // assign trophies to user
+      if let Ok(trophies) = invite_code_check_response.get_assigned_trophy() {
+        println!("Received trophies: {:?}", trophies);
+        
+      } 
     },
     None => {
       // @NOTE: remove this for open beta test
