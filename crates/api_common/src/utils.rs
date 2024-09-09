@@ -432,12 +432,14 @@ struct InviteResponse {
 
 
 // check invite code is avaliable
-pub async fn invite_code_check(invite_code: &str) -> LemmyResult<Option<Vec<String>>> {
+pub async fn invite_code_check(invite_code: &str, settings: &Settings) -> LemmyResult<Option<Vec<String>>> {
     // Create an HTTP client
     let client = Client::new();
+    let cloud_control_api_config = settings.cloud_control_api_config().unwrap();
+
 
     // Define the URL of the HTTP service
-    let url = "http://127.0.0.1:8081/validate-invite-code";
+    let url = cloud_control_api_config.url + "/validate-invite-code";
 
     // Create the request body
     let request_body = InviteRequest {
@@ -448,7 +450,7 @@ pub async fn invite_code_check(invite_code: &str) -> LemmyResult<Option<Vec<Stri
     let response = client
       .post(url)
       .json(&request_body)
-      .header("Authorization", "Bearer valid_token_here") // Adjust token as needed
+      .header("Authorization", cloud_control_api_config.api_key)
       .send()
       .await?;
 

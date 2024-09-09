@@ -63,7 +63,7 @@ pub async fn register(
   // check if user input invide code
   match &data.invite_code {
     Some(invite_code) => {
-      invite_code_check(invite_code).await?;
+      invite_code_check(invite_code, context.settings()).await?;
     },
     None => {
       // @NOTE: remove this for open beta test

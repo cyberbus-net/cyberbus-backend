@@ -99,13 +99,13 @@ pub struct PictrsConfig {
 #[serde(default, deny_unknown_fields)]
 pub struct CloudControlAPIConfig {
   /// Address where cloud_control_api is available (for cloud data control & dispatch)
-  #[default(Url::parse("http://localhost:8081").expect("parse cloud-_control_api url"))]
+  #[default("http://localhost:8081")]
   #[doku(example = "http://localhost:8081")]
-  pub url: Url,
+  pub url: String,
 
   /// Set a API authorization Bearer key.
-  #[default(None)]
-  pub api_key: Option<String>,
+  #[default("")]
+  pub api_key: String,
 
   /// Timeout for API calling (in seconds)
   #[default(5)]
