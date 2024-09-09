@@ -76,6 +76,15 @@
     # Timeout for uploading images to pictrs (in seconds)
     upload_timeout: 30
   }
+  # cyberbus-cloud-control-api configuration.
+  cloud_control_api: {
+    # Address where cyberbus-cloud-control-api is available
+    url: "http://localhost:8081/"
+    # Set a Authorization key.
+    api_key: "string"
+    # Timeout for API request (in seconds)
+    api_timeout: 30
+  }
   # Email sending configuration. All options except login/password are mandatory
   email: {
     # Hostname and port of the smtp server
