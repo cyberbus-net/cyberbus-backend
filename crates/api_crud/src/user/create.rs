@@ -29,6 +29,7 @@ use lemmy_db_schema::{
   },
   traits::Crud,
   RegistrationMode,
+  jsonbs::{new_trophy_case_by_trophy_names},
 };
 use lemmy_db_views::structs::{LocalUserView, SiteView};
 use lemmy_utils::{
@@ -60,22 +61,20 @@ pub async fn register(
   password_length_check(&data.password)?;
   honeypot_check(&data.honeypot)?;
 
+  
   // check if user input invide code
-  match &data.invite_code {
-    Some(invite_code) => {
-      let invite_code_check_response = invite_code_check(invite_code, context.settings()).await?;
-      // assign trophies to user
-      if let Ok(trophies) = invite_code_check_response.get_assigned_trophy() {
-        println!("Received trophies: {:?}", trophies);
-        
-      } 
-    },
-    None => {
-      // @NOTE: remove this for open beta test
-      Err(LemmyErrorType::InviteCodeRequired)?
-    }
-  }
-
+  let trophy_case = match &data.invite_code {
+      Some(invite_code) => {
+          let invite_code_check_response = invite_code_check(invite_code, context.settings()).await?;
+          invite_code_check_response.get_assigned_trophy().map(|trophies| {
+              new_trophy_case_by_trophy_names(trophies)
+          })
+      }
+      None => {
+          // @NOTE: remove this for open beta test
+          Err(LemmyErrorType::InviteCodeRequired)?
+      }
+  };
 
   if local_site.require_email_verification && data.email.is_none() {
     Err(LemmyErrorType::EmailRequired)?
@@ -176,6 +175,7 @@ pub async fn register(
     default_listing_type: Some(local_site.default_post_listing_type),
     post_listing_mode: Some(local_site.default_post_listing_mode),
     interface_language: language_tags.first().cloned(),
+    trophy_case: trophy_case.ok(),
     // If its the initial site setup, they are an admin
     admin: Some(!local_site.site_setup),
     ..LocalUserInsertForm::new(inserted_person.id, data.password.to_string())

@@ -463,6 +463,7 @@ diesel::table! {
         enable_keyboard_navigation -> Bool,
         enable_animated_images -> Bool,
         collapse_bot_comments -> Bool,
+        trophy_case -> Nullable<Jsonb>,
     }
 }
 

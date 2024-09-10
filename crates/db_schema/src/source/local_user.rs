@@ -2,6 +2,7 @@
 use crate::schema::local_user;
 use crate::{
   newtypes::{LocalUserId, PersonId},
+  jsonbs::{TrophyCase},
   sensitive::SensitiveString,
   ListingType,
   PostListingMode,
@@ -66,6 +67,8 @@ pub struct LocalUser {
   pub enable_animated_images: bool,
   /// Whether to auto-collapse bot comments.
   pub collapse_bot_comments: bool,
+  /// local user trophy case 
+  pub trophy_case: Option<TrophyCase>,
 }
 
 #[derive(Clone, derive_new::new)]
@@ -122,6 +125,8 @@ pub struct LocalUserInsertForm {
   pub enable_animated_images: Option<bool>,
   #[new(default)]
   pub collapse_bot_comments: Option<bool>,
+  #[new(default)]
+  pub trophy_case: Option<TrophyCase>,
 }
 
 #[derive(Clone, Default)]
