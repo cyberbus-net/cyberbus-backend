@@ -613,6 +613,7 @@ mod tests {
       reports_email_admins: None,
       content_warning: None,
       default_post_listing_mode: None,
+      require_invite_code: None,
     }
   }
 }
