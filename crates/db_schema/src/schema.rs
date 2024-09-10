@@ -652,7 +652,6 @@ diesel::table! {
         bot_account -> Bool,
         ban_expires -> Nullable<Timestamptz>,
         instance_id -> Int4,
-        config -> Nullable<Jsonb>,
     }
 }
 

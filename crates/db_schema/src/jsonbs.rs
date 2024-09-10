@@ -4,11 +4,6 @@ use ts_rs::TS;
 use diesel_as_jsonb::AsJsonb;
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize, TS, AsJsonb)]
-pub struct PersonConfig {
-    pub invite_code: Option<String>,
-}
-
-#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize, TS, AsJsonb)]
 #[cfg_attr(feature = "full", ts(export))]
 pub struct TrophyCase {
     pub trophies: Option<Vec<Trophy>>,
