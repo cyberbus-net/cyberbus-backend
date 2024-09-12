@@ -256,6 +256,23 @@ pub async fn check_community_mod_action(
   Ok(())
 }
 
+pub async fn check_community_mod_action_admin_only(
+  local_user_view: &LocalUserView,
+  person: &Person,
+  community_id: CommunityId,
+  allow_deleted: bool,
+  pool: &mut DbPool<'_>,
+) -> LemmyResult<()> {
+  is_admin(local_user_view)?;
+  check_community_ban(person, community_id, pool).await?;
+
+  // it must be possible to restore deleted community
+  if !allow_deleted {
+    check_community_deleted_removed(community_id, pool).await?;
+  }
+  Ok(())
+}
+
 /// Don't allow creating reports for removed / deleted posts
 pub fn check_post_deleted_or_removed(post: &Post) -> LemmyResult<()> {
   if post.deleted || post.removed {

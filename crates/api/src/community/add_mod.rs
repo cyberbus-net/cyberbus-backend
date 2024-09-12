@@ -4,7 +4,7 @@ use lemmy_api_common::{
   community::{AddModToCommunity, AddModToCommunityResponse},
   context::LemmyContext,
   send_activity::{ActivityChannel, SendActivityData},
-  utils::check_community_mod_action,
+  utils::check_community_mod_action_admin_only,
 };
 use lemmy_db_schema::{
   source::{
@@ -26,8 +26,9 @@ pub async fn add_mod_to_community(
 ) -> LemmyResult<Json<AddModToCommunityResponse>> {
   let community_id = data.community_id;
 
-  // Verify that only mods or admins can add mod
-  check_community_mod_action(
+  // Verify that only admins can add mod
+  check_community_mod_action_admin_only(
+    &local_user_view,
     &local_user_view.person,
     community_id,
     false,
