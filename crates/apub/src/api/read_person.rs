@@ -66,6 +66,11 @@ pub async fn read_person(
   };
 
   let local_user = local_user_view.as_ref().map(|l| &l.local_user);
+  // Access trophy_case from local_user
+  let trophy_case = local_user_view
+    .as_ref() // Borrow the local_user_view
+    .and_then(|view| view.local_user.trophy_case.as_ref()) // Access trophy_case
+    .cloned(); // Clone trophy_case if needed
 
   let posts = PostQuery {
     sort,
@@ -109,5 +114,6 @@ pub async fn read_person(
     moderates,
     comments,
     posts,
+    trophy_case,
   }))
 }

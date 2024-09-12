@@ -6,6 +6,7 @@ use lemmy_db_schema::{
   ListingType,
   PostListingMode,
   SortType,
+  jsonbs::{TrophyCase},
 };
 use lemmy_db_views::structs::{CommentView, LocalImageView, PostView};
 use lemmy_db_views_actor::structs::{
@@ -192,6 +193,7 @@ pub struct GetPersonDetailsResponse {
   pub comments: Vec<CommentView>,
   pub posts: Vec<PostView>,
   pub moderates: Vec<CommunityModeratorView>,
+  pub trophy_case: Option<TrophyCase>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, Default, PartialEq, Eq)]
