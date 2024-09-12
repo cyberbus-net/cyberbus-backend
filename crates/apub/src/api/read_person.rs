@@ -14,6 +14,7 @@ use lemmy_db_views::{
 };
 use lemmy_db_views_actor::structs::{CommunityModeratorView, PersonView};
 use lemmy_utils::error::{LemmyErrorExt2, LemmyErrorType, LemmyResult};
+use tracing::{info, debug};
 
 #[tracing::instrument(skip(context))]
 pub async fn read_person(
@@ -66,12 +67,13 @@ pub async fn read_person(
   };
 
   let local_user = local_user_view.as_ref().map(|l| &l.local_user);
-  // Access trophy_case from local_user
-  let trophy_case = local_user_view
-    .as_ref() // Borrow the local_user_view
-    .and_then(|view| view.local_user.trophy_case.as_ref()) // Access trophy_case
-    .cloned(); // Clone trophy_case if needed
 
+  // Access trophy_case from local_user
+  let local_user_view_from_db = LocalUserView::read_person(&mut context.pool(), person_details_id)
+    .await?
+    .ok_or(LemmyErrorType::CouldntFindPerson)?;
+  let trophy_case = local_user_view_from_db.local_user.trophy_case;
+   
   let posts = PostQuery {
     sort,
     saved_only,
