@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1.9
 ARG RUST_VERSION=1.80
-ARG CARGO_BUILD_FEATURES=default
 ARG RUST_RELEASE_MODE=debug
 
 ARG AMD_BUILDER_IMAGE=rust:${RUST_VERSION}
@@ -10,34 +9,34 @@ ARG ARM_BUILDER_IMAGE="ghcr.io/raskyld/aarch64-lemmy-linux-gnu:v0.4.0"
 ARG AMD_RUNNER_IMAGE=debian:bookworm-slim
 ARG ARM_RUNNER_IMAGE=debian:bookworm-slim
 
-ARG UNAME=lemmy
+ARG UNAME=cyberbus
 ARG UID=1000
 ARG GID=1000
 
 # AMD64 builder
 FROM --platform=${BUILDPLATFORM} ${AMD_BUILDER_IMAGE} AS build-amd64
 
-ARG CARGO_BUILD_FEATURES
 ARG RUST_RELEASE_MODE
 ARG RUSTFLAGS
 
-WORKDIR /lemmy
+RUN mkdir -p /data/repo/cyberbus-backend
+WORKDIR /data/repo/cyberbus-backend
 
 COPY . ./
 
 # Debug build
-RUN --mount=type=cache,target=/lemmy/target set -ex; \
+RUN --mount=type=cache,target=/data/repo/cyberbus-backend/target set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "debug" ]; then \
-        cargo build --features "${CARGO_BUILD_FEATURES}"; \
-        mv target/"${RUST_RELEASE_MODE}"/lemmy_server ./lemmy_server; \
+    cargo build ; \
+    mv target/"${RUST_RELEASE_MODE}"/cyberbus-backend ./cyberbus-backend; \
     fi
 
 # Release build
-RUN --mount=type=cache,target=/lemmy/target set -ex; \
+RUN --mount=type=cache,target=/data/repo/cyberbus-backend/target set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "release" ]; then \
-        cargo clean --release; \
-        cargo build --features "${CARGO_BUILD_FEATURES}" --release; \
-        mv target/"${RUST_RELEASE_MODE}"/lemmy_server ./lemmy_server; \
+    cargo clean --release; \
+    cargo build --release; \
+    mv target/"${RUST_RELEASE_MODE}"/cyberbus-backend ./cyberbus-backend; \
     fi
 
 # ARM64 builder
@@ -46,31 +45,30 @@ RUN --mount=type=cache,target=/lemmy/target set -ex; \
 FROM --platform=linux/amd64 ${ARM_BUILDER_IMAGE} AS build-arm64
 
 ARG RUST_RELEASE_MODE
-ARG CARGO_BUILD_FEATURES
 ARG RUSTFLAGS
 
-WORKDIR /home/lemmy/src
+RUN mkdir -p /data/repo/cyberbus-backend
+WORKDIR /data/repo/cyberbus-backend
 USER 10001:10001
 
-COPY --chown=lemmy:lemmy . ./
+COPY --chown=cyberbus:cyberbus . ./
 
-ENV PATH="/home/lemmy/.cargo/bin:${PATH}"
-ENV RUST_RELEASE_MODE=${RUST_RELEASE_MODE} \
-    CARGO_BUILD_FEATURES=${CARGO_BUILD_FEATURES}
+ENV PATH="/home/cyberbus/.cargo/bin:${PATH}"
+ENV RUST_RELEASE_MODE=${RUST_RELEASE_MODE} 
 
 # Debug build
 RUN --mount=type=cache,target=./target,uid=10001,gid=10001 set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "debug" ]; then \
-        cargo build --features "${CARGO_BUILD_FEATURES}"; \
-        mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/lemmy_server" /home/lemmy/lemmy_server; \
+    cargo build ; \
+    mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/cyberbus-backend" /data/repo/cyberbus-backend/cyberbus-backend; \
     fi
 
 # Release build
 RUN --mount=type=cache,target=./target,uid=10001,gid=10001 set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "release" ]; then \
-        cargo clean --release; \
-        cargo build --features "${CARGO_BUILD_FEATURES}" --release; \
-        mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/lemmy_server" /home/lemmy/lemmy_server; \
+    cargo clean --release; \
+    cargo build --release; \
+    mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/cyberbus-backend" /data/repo/cyberbus-backend/cyberbus-backend; \
     fi
 
 
@@ -79,23 +77,25 @@ FROM ${AMD_RUNNER_IMAGE} AS runner-linux-amd64
 
 # Add system packages that are needed: federation needs CA certificates, curl can be used for healthchecks
 RUN apt update && apt install -y libssl-dev libpq-dev ca-certificates curl
+RUN mkdir -p /data/repo/cyberbus-backend
 
-COPY --from=build-amd64 --chmod=0755 /lemmy/lemmy_server /usr/local/bin
+COPY --from=build-amd64 --chmod=0755 /data/repo/cyberbus-backend /data/repo/cyberbus-backend
 
 # arm base runner
 FROM ${ARM_RUNNER_IMAGE} AS runner-linux-arm64
 
 RUN apt update && apt install -y libssl-dev libpq-dev ca-certificates curl
+RUN mkdir -p /data/repo/cyberbus-backend
 
-COPY --from=build-arm64 --chmod=0755 /home/lemmy/lemmy_server /usr/local/bin
+COPY --from=build-arm64 --chmod=0755 /data/repo/cyberbus-backend /data/repo/cyberbus-backend
 
 # Final image that use a base runner based on the target OS and ARCH
 FROM runner-${TARGETOS}-${TARGETARCH}
 
 LABEL org.opencontainers.image.authors="The Lemmy Authors"
-LABEL org.opencontainers.image.source="https://github.com/LemmyNet/lemmy"
-LABEL org.opencontainers.image.licenses="AGPL-3.0-or-later"
-LABEL org.opencontainers.image.description="A link aggregator and forum for the fediverse"
+LABEL org.opencontainers.image.source="https://github.com/cyberbus-net/cyberbus-backend"
+LABEL org.opencontainers.image.licenses="None"
+LABEL org.opencontainers.image.description="Cloud control API for cyberbus utils"
 
 ARG UNAME
 ARG GID
@@ -105,6 +105,6 @@ RUN groupadd -g ${GID} -o ${UNAME} && \
     useradd -m -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}
 USER $UNAME
 
-ENTRYPOINT ["lemmy_server"]
+ENTRYPOINT ["/data/repo/cyberbus-backend/cyberbus-backend"]
 EXPOSE 8536
 STOPSIGNAL SIGTERM
