@@ -17,7 +17,7 @@ env_setup.sh
 query_testing/**/reports/*.json
 
 # local config
-config/config.hjson
+config/*.hjson
 
 
 # API tests
