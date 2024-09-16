@@ -1,5 +1,5 @@
 use clap::Parser;
-use lemmy_server::{init_logging, start_lemmy_server, CmdArgs};
+use cyberbus_backend::{init_logging, start_lemmy_server, CmdArgs};
 use lemmy_utils::{error::LemmyResult, settings::SETTINGS};
 
 pub extern crate rustls;

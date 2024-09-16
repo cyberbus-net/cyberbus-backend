@@ -14,7 +14,6 @@ use lemmy_db_views::{
 };
 use lemmy_db_views_actor::structs::{CommunityModeratorView, PersonView};
 use lemmy_utils::error::{LemmyErrorExt2, LemmyErrorType, LemmyResult};
-use tracing::{info, debug};
 
 #[tracing::instrument(skip(context))]
 pub async fn read_person(

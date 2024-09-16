@@ -28,7 +28,7 @@ COPY . ./
 RUN --mount=type=cache,target=/data/repo/cyberbus-backend/target set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "debug" ]; then \
     cargo build ; \
-    mv target/"${RUST_RELEASE_MODE}"/cyberbus-backend ./cyberbus-backend; \
+    mv target/"${RUST_RELEASE_MODE}"/cyberbus_backend ./cyberbus-backend; \
     fi
 
 # Release build
@@ -36,7 +36,7 @@ RUN --mount=type=cache,target=/data/repo/cyberbus-backend/target set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "release" ]; then \
     cargo clean --release; \
     cargo build --release; \
-    mv target/"${RUST_RELEASE_MODE}"/cyberbus-backend ./cyberbus-backend; \
+    mv target/"${RUST_RELEASE_MODE}"/cyberbus_backend ./cyberbus-backend; \
     fi
 
 # ARM64 builder
@@ -60,7 +60,7 @@ ENV RUST_RELEASE_MODE=${RUST_RELEASE_MODE}
 RUN --mount=type=cache,target=./target,uid=10001,gid=10001 set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "debug" ]; then \
     cargo build ; \
-    mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/cyberbus-backend" /data/repo/cyberbus-backend/cyberbus-backend; \
+    mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/cyberbus_backend" /data/repo/cyberbus-backend/cyberbus-backend; \
     fi
 
 # Release build
@@ -68,7 +68,7 @@ RUN --mount=type=cache,target=./target,uid=10001,gid=10001 set -ex; \
     if [ "${RUST_RELEASE_MODE}" = "release" ]; then \
     cargo clean --release; \
     cargo build --release; \
-    mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/cyberbus-backend" /data/repo/cyberbus-backend/cyberbus-backend; \
+    mv "./target/$CARGO_BUILD_TARGET/$RUST_RELEASE_MODE/cyberbus_backend" /data/repo/cyberbus-backend/cyberbus-backend; \
     fi
 
 

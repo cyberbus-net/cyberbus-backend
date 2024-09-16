@@ -8,7 +8,7 @@ documentation = "https://github.com/cyberbus-net"
 repository = "https://github.com/cyberbus-net/cyberbus-backend"
 
 [package]
-name = "lemmy_server"
+name = "cyberbus_backend"
 version.workspace = true
 edition.workspace = true
 description.workspace = true
