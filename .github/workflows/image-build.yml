@@ -26,3 +26,8 @@ jobs:
         - name: push the docker image
           id: push-docker-image
           run: docker push ${{secrets.DOCKERHUB_USERNAME}}/cyberbus-backend:latest
+    actions-timeline:
+      needs: [build]
+      runs-on: ubuntu-latest
+      steps:
+      - uses: Kesin11/actions-timeline@v2
