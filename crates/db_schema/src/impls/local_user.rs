@@ -14,6 +14,7 @@ use crate::{
     DbPool,
   },
   CommunityVisibility,
+  jsonbs::Trophy,
 };
 use bcrypt::{hash, DEFAULT_COST};
 use diesel::{
@@ -26,6 +27,13 @@ use diesel::{
 };
 use diesel_async::RunQueryDsl;
 use lemmy_utils::error::{LemmyErrorType, LemmyResult};
+use diesel::pg::Pg;
+use diesel::sql_types::Untyped;
+use diesel::deserialize::{FromSql, FromSqlRow};
+use diesel::sql_types::Integer;
+use diesel::row::{Row, NamedRow};
+use diesel::backend::Backend;
+use diesel::sql_types::*;
 
 impl LocalUser {
   pub async fn create(
@@ -283,6 +291,37 @@ impl LocalUser {
     } else {
       Err(LemmyErrorType::NotHigherMod)?
     }
+  }
+
+  pub async fn append_trophy(
+    pool: &mut DbPool<'_>,
+    local_user_id: LocalUserId,
+    trophy: Trophy,
+  ) -> Result<(), Error> {
+    let conn = &mut get_conn(pool).await?;
+    
+    diesel::sql_query(r#"
+        UPDATE local_user 
+        SET trophy_case = CASE
+            WHEN trophy_case IS NULL THEN 
+                jsonb_build_object('trophies', jsonb_build_array($2::jsonb))
+            WHEN NOT jsonb_path_exists(trophy_case, ('$.trophies[*] ? (@.name == $' || $3 || ')')) THEN
+                jsonb_set(
+                    COALESCE(trophy_case, '{}'::jsonb),
+                    '{trophies}',
+                    COALESCE(trophy_case->'trophies', '[]'::jsonb) || $2::jsonb
+                )
+            ELSE trophy_case
+        END
+        WHERE id = $1
+    "#)
+    .bind::<diesel::sql_types::Integer, _>(local_user_id.0)
+    .bind::<diesel::sql_types::Jsonb, _>(serde_json::to_value(&trophy).unwrap())
+    .bind::<diesel::sql_types::Text, _>(trophy.name)
+    .execute(conn)
+    .await?;
+
+    Ok(())
   }
 }
 
