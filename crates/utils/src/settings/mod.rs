@@ -38,6 +38,8 @@ impl Settings {
   /// `lemmy_db_schema/src/lib.rs::get_database_url_from_env()`
   /// Warning: Only call this once.
   pub(crate) fn init() -> LemmyResult<Self> {
+    let config_location = Self::get_config_location();
+    println!("Loading configuration from: {}", config_location);
     let config = from_str::<Settings>(&Self::read_config_file()?)?;
     if config.hostname == "unset" {
       Err(anyhow!("Hostname variable is not set!").into())
