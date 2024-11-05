@@ -57,6 +57,9 @@ pub struct Settings {
   #[default(None)]
   #[doku(example = "*")]
   cors_origin: Option<String>,
+  /// Trophy activity configuration
+  #[default(Some(Default::default()))]
+  pub trophy_activity: Option<TrophyActivityConfig>,
 }
 
 impl Settings {
@@ -242,7 +245,7 @@ pub struct SetupConfig {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, SmartDefault, Document)]
-#[serde(deny_unknown_fields)]
+#[serde(default)]
 pub struct PrometheusConfig {
   // Address that the Prometheus metrics will be served on.
   #[default(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)))]
@@ -263,4 +266,24 @@ pub struct FederationWorkerConfig {
   /// per second) and if a receiving instance is not keeping up.
   #[default(1)]
   pub concurrent_sends_per_instance: i8,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, SmartDefault, Document)]
+#[serde(default, deny_unknown_fields)]
+pub struct TrophyActivityConfig {
+    /// Enable/disable trophy activity feature
+    #[default(true)]
+    pub enabled: bool,
+    /// List of activities and their corresponding trophies
+    #[default(Vec::new())]
+    pub activities: Vec<TrophyActivity>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, SmartDefault, Document)]
+#[serde(deny_unknown_fields)]
+pub struct TrophyActivity {
+    /// Title pattern to match
+    pub title_pattern: String,
+    /// Trophy name to award
+    pub trophy_name: String,
 }
