@@ -130,4 +130,24 @@
   # Sets a response Access-Control-Allow-Origin CORS header
   # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
   cors_origin: "*"
+
+  # Trophy activity configuration
+  trophy_activity: {
+    # Enable/disable trophy activity feature
+    enabled: true
+    # List of activities and their corresponding trophies
+    activities: [
+      {
+        # Title pattern to match
+        title_pattern: "[第一届晒机大赛]"
+        # Trophy name to award
+        trophy_name: "_1st_show_your_build_competition"
+      }
+      # Add more activities here as needed
+      # {
+      #   title_pattern: "[其他活动]"
+      #   trophy_name: "other_activity_trophy"
+      # }
+    ]
+  }
 }
