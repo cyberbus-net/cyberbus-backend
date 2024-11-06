@@ -27,13 +27,6 @@ use diesel::{
 };
 use diesel_async::RunQueryDsl;
 use lemmy_utils::error::{LemmyErrorType, LemmyResult};
-use diesel::pg::Pg;
-use diesel::sql_types::Untyped;
-use diesel::deserialize::{FromSql, FromSqlRow};
-use diesel::sql_types::Integer;
-use diesel::row::{Row, NamedRow};
-use diesel::backend::Backend;
-use diesel::sql_types::*;
 
 impl LocalUser {
   pub async fn create(
