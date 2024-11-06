@@ -43,6 +43,9 @@ use lemmy_utils::{
     },
   },
 };
+use lemmy_utils::activity::activity::get_trophy_for_post;
+use lemmy_db_schema::jsonbs::Trophy;
+use lemmy_db_schema::source::local_user::LocalUser;
 use tracing::Instrument;
 use url::Url;
 use webmention::{Webmention, WebmentionError};
@@ -187,6 +190,19 @@ pub async fn create_post(
       });
     }
   };
+
+  // Check if post title matches any trophy activity feature
+  if let Some(trophy_config) = &context.settings().trophy_activity {
+    if let Some(trophy_name) = get_trophy_for_post(trophy_config, &data.name) {
+      LocalUser::append_trophy(
+        &mut context.pool(), 
+        local_user_view.local_user.id, 
+        Trophy::new(trophy_name)
+      )
+      .await
+      .with_lemmy_type(LemmyErrorType::CouldntUpdateUser)?;
+    }
+  }
 
   build_post_response(&context, community_id, local_user_view, post_id).await
 }

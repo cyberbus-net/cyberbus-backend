@@ -305,7 +305,11 @@ impl LocalUser {
         SET trophy_case = CASE
             WHEN trophy_case IS NULL THEN 
                 jsonb_build_object('trophies', jsonb_build_array($2::jsonb))
-            WHEN NOT jsonb_path_exists(trophy_case, ('$.trophies[*] ? (@.name == $' || $3 || ')')) THEN
+            WHEN NOT EXISTS (
+                SELECT 1 
+                FROM jsonb_array_elements(COALESCE(trophy_case->'trophies', '[]'::jsonb)) as t
+                WHERE t->>'name' = $3
+            ) THEN
                 jsonb_set(
                     COALESCE(trophy_case, '{}'::jsonb),
                     '{trophies}',

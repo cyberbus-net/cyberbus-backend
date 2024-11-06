@@ -8,6 +8,7 @@ cfg_if! {
     pub mod request;
     pub mod response;
     pub mod settings;
+    pub mod activity;
     pub mod utils;
   }
 }

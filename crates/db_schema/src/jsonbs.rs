@@ -19,15 +19,22 @@ pub struct Trophy {
   pub rewarded_at: Option<DateTime<Utc>>,
 }
 
+impl Trophy {
+    /// Creates a new trophy with the given name and current timestamp
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
+            rewarded_at: Some(Utc::now()),
+        }
+    }
+}
+
 pub fn new_trophy_case_by_trophy_names(trophie_names: Vec<String>) -> TrophyCase {
     let new_trophy_case = TrophyCase {
         trophies: Some(
             trophie_names
                 .iter()
-                .map(|trophie_names| Trophy {
-                    name: trophie_names.to_string(),
-                    rewarded_at: Some(Utc::now()),
-                })
+                .map(|trophie_names| Trophy::new(trophie_names.to_string()))
                 .collect(),
         ),
     };
