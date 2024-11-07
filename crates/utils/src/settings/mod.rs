@@ -39,11 +39,19 @@ impl Settings {
   /// Warning: Only call this once.
   pub(crate) fn init() -> LemmyResult<Self> {
     let config_location = Self::get_config_location();
+    println!("\n-------------------------------------------------------------------------\n");
     println!("Loading configuration from: {}", config_location);
     let config = from_str::<Settings>(&Self::read_config_file()?)?;
     if config.hostname == "unset" {
       Err(anyhow!("Hostname variable is not set!").into())
     } else {
+      println!("\nBasic configuration:");
+      println!("  hostname: {}", config.hostname);
+      println!("  bind: {}", config.bind);
+      println!("  port: {}", config.port);
+      println!("  tls_enabled: {}", config.tls_enabled);
+      println!("  full_url: {}", config.get_protocol_and_hostname());
+      println!("-------------------------------------------------------------------------\n");
       Ok(config)
     }
   }
