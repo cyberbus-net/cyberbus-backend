@@ -445,3 +445,21 @@ pub struct ListMedia {
 pub struct ListMediaResponse {
   pub images: Vec<LocalImageView>,
 }
+
+#[skip_serializing_none]
+#[derive(Debug, Serialize, Deserialize, Clone, Default, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "full", derive(TS))]
+#[cfg_attr(feature = "full", ts(export))]
+/// Request to resend verification email
+pub struct SendVerifyEmail {
+    pub email: SensitiveString,
+}
+
+#[skip_serializing_none]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[cfg_attr(feature = "full", derive(TS))]
+#[cfg_attr(feature = "full", ts(export))]
+/// Response for resending verification email
+pub struct SendVerifyEmailResponse {
+    pub email_sent: bool,
+}

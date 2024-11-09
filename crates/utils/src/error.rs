@@ -184,6 +184,8 @@ pub enum LemmyErrorType {
   InvaliedInviteCode,
   RequestCloudControlAPIFailed,
   InviteCodeRequired,
+  EmailNotFound,
+  EmailAlreadyVerified,
 }
 
 cfg_if! {

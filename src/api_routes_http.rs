@@ -123,7 +123,7 @@ use lemmy_api_crud::{
     update::update_private_message,
   },
   site::{create::create_site, read::get_site, update::update_site},
-  user::{create::register, delete::delete_account},
+  user::{create::register, delete::delete_account, send_verify_email::send_verify_email},
 };
 use lemmy_apub::api::{
   list_comments::list_comments,
@@ -343,7 +343,8 @@ pub fn config(cfg: &mut web::ServiceConfig, rate_limit: &RateLimitCell) {
           .route("/totp/generate", web::post().to(generate_totp_secret))
           .route("/totp/update", web::post().to(update_totp))
           .route("/list_logins", web::get().to(list_logins))
-          .route("/validate_auth", web::get().to(validate_auth)),
+          .route("/validate_auth", web::get().to(validate_auth))
+          .route("/send_verify_email", web::post().to(send_verify_email)),
       )
       // Admin Actions
       .service(
