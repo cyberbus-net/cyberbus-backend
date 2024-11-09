@@ -32,6 +32,7 @@ use lemmy_api::{
     list_media::list_media,
     login::login,
     logout::logout,
+    send_verify_email::send_verify_email,
     notifications::{
       list_mentions::list_mentions,
       list_replies::list_replies,
@@ -123,7 +124,7 @@ use lemmy_api_crud::{
     update::update_private_message,
   },
   site::{create::create_site, read::get_site, update::update_site},
-  user::{create::register, delete::delete_account, send_verify_email::send_verify_email},
+  user::{create::register, delete::delete_account},
 };
 use lemmy_apub::api::{
   list_comments::list_comments,

@@ -13,6 +13,7 @@ pub mod list_logins;
 pub mod list_media;
 pub mod login;
 pub mod logout;
+pub mod send_verify_email;
 pub mod notifications;
 pub mod report_count;
 pub mod reset_password;
